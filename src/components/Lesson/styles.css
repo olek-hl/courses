@@ -3,7 +3,6 @@
   align-items: center;
   height: 30px;
   padding: 5px 0;
-  border-top: 1px solid #888;
   border-bottom: 1px solid #888;
   margin-bottom: 10px;
   cursor: pointer;
@@ -11,9 +10,19 @@
 }
 .course-lesson-wrapper.locked {
   cursor: default;
+  opacity: 0.3;
+}
+.lesson-status-cell {
+  width: 5%;
+  display: flex;
+  justify-content: center;
+}
+.lesson-duration-cell {
+  width: 7%;
 }
 .lesson-image-cell {
   height: 100%;
+  width: 8%;
 }
 .lesson-image-cell img {
   height: 100%;

@@ -28,7 +28,7 @@ const CourceLesson = (props: ICourseLessonProps) => {
 
   const lessonStatusIcon = useMemo(() => {
     if (isLocked) {
-      return <LockClock color={"disabled"} />;
+      return <LockClock />;
     }
     if (isCurrentlyPlaying(link)) {
       return paused ? <PlayCircle color={"primary"} /> : <Pause />;
