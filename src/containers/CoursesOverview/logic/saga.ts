@@ -19,6 +19,6 @@ function* callGetCoursesList(): any {
   }
 }
 
-export default function* scheduleSaga() {
+export default function* courseOverviewSaga() {
   yield takeLatest(types.GET_COURSES_OVERVIEW, callGetCoursesList);
 }

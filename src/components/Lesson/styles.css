@@ -1,0 +1,20 @@
+.course-lesson-wrapper {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  padding: 5px 0;
+  border-top: 1px solid #888;
+  border-bottom: 1px solid #888;
+  margin-bottom: 10px;
+  cursor: pointer;
+  position: relative;
+}
+.course-lesson-wrapper.locked {
+  backdrop-filter: brightness(0.5);
+}
+.lesson-image-cell {
+  height: 100%;
+}
+.lesson-image-cell img {
+  height: 100%;
+}

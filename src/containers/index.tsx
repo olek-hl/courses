@@ -1,3 +1,4 @@
-import Courses from "./coursesOverview";
+import Courses from "./CoursesOverview";
+import CourseView from "./CourseView";
 
-export { Courses };
+export { Courses, CourseView };

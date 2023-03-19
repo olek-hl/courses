@@ -1,6 +1,7 @@
 import { all, fork, take, takeEvery, put, call } from "redux-saga/effects";
 import * as types from "./types";
-import coursesOverviewSaga from "../containers/coursesOverview/logic/saga";
+import coursesOverviewSaga from "../containers/CoursesOverview/logic/saga";
+import courseViewSaga from "../containers/CourseView/logic/saga";
 import { host, apiVersion } from "../api/config";
 import { routes } from "../api/routes";
 
@@ -63,5 +64,5 @@ function* callGetApiToken(): any {
 export default function* rootSaga() {
   yield takeEvery(types.MAKE_HTTP_REQUEST, callMakeHttpRequest);
   yield takeEvery(types.GET_API_TOKEN, callGetApiToken);
-  yield all([fork(coursesOverviewSaga)]);
+  yield all([fork(coursesOverviewSaga), fork(courseViewSaga)]);
 }
