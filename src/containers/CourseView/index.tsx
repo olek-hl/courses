@@ -35,6 +35,14 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
 
   const { isFetching, data } = courseData;
 
+  const isCurrentlyPlaying = (link: string) => {
+    return link === videoLink;
+  };
+
+  const handleLessonClick = (link: string) => {
+    setVideoLink(link);
+  };
+
   if (isFetching || !data) {
     return <Loader isFullPage />;
   }
@@ -82,7 +90,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
         <Divider />
         <div className="course-lossons-list">
           {courseData.data?.lessons.map((lesson) => (
-            <Lesson lesson={lesson} />
+            <Lesson
+              lesson={lesson}
+              isCurrentlyPlaying={isCurrentlyPlaying}
+              handleLessonClick={handleLessonClick}
+            />
           ))}
         </div>
       </div>

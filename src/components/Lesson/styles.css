@@ -10,7 +10,7 @@
   position: relative;
 }
 .course-lesson-wrapper.locked {
-  backdrop-filter: brightness(0.5);
+  cursor: default;
 }
 .lesson-image-cell {
   height: 100%;
