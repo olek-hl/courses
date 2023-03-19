@@ -2,9 +2,8 @@
   display: flex;
   align-items: center;
   height: 30px;
-  padding: 5px 0;
+  padding: 10px 0;
   border-bottom: 1px solid #888;
-  margin-bottom: 10px;
   cursor: pointer;
   position: relative;
 }
@@ -26,4 +25,15 @@
 }
 .lesson-image-cell img {
   height: 100%;
+}
+.lesson-title-cell {
+  width: 55%;
+  display: flex;
+  align-items: center;
+}
+.lesson-progress-cell {
+  width: 15%;
+}
+.lesson-currently-playing {
+  width: 10%;
 }

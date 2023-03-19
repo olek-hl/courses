@@ -26,15 +26,17 @@ const CourceLesson = (props: ICourseLessonProps) => {
 
   const isLocked = status === LessonStatus.Locked;
 
+  const isPlaying = isCurrentlyPlaying(link);
+
   const lessonStatusIcon = useMemo(() => {
     if (isLocked) {
       return <LockClock />;
     }
-    if (isCurrentlyPlaying(link)) {
-      return paused ? <PlayCircle color={"primary"} /> : <Pause />;
+    if (isPlaying) {
+      return paused ? <PlayCircle color={"secondary"} /> : <Pause />;
     }
     return <PlayCircle />;
-  }, [isLocked, paused, isCurrentlyPlaying]);
+  }, [isLocked, paused, isPlaying]);
 
   return (
     <div
@@ -77,6 +79,14 @@ const CourceLesson = (props: ICourseLessonProps) => {
         >
           {title}
         </Typography>
+      </div>
+      <div className="lesson-progress-cell cell">
+        <Typography variant="caption" component="span">
+          {`Progress: 60%`}
+        </Typography>
+      </div>
+      <div className="lesson-currently-playing cell">
+        {isPlaying && <Chip label="Currently playing" color={"secondary"} />}
       </div>
     </div>
   );
