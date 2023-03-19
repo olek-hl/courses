@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Typography, Divider, Chip } from "@material-ui/core";
 import { LockClock, Pause, PlayCircle } from "@mui/icons-material";
 import { toMinutesAndSeconds } from "../../services";
@@ -11,6 +11,7 @@ import "./styles.css";
 
 export interface ICourseLessonProps {
   lesson: ICourseLesson;
+  paused: boolean;
   isCurrentlyPlaying: (link: string) => boolean;
   handleLessonClick: (link: string) => void;
 }
@@ -18,26 +19,29 @@ export interface ICourseLessonProps {
 const CourceLesson = (props: ICourseLessonProps) => {
   const {
     lesson: { title, duration, order, status, link, previewImageLink },
+    paused,
     isCurrentlyPlaying,
     handleLessonClick,
   } = props;
 
   const isLocked = status === LessonStatus.Locked;
 
+  const lessonStatusIcon = useMemo(() => {
+    if (isLocked) {
+      return <LockClock color={"disabled"} />;
+    }
+    if (isCurrentlyPlaying(link)) {
+      return paused ? <PlayCircle color={"primary"} /> : <Pause />;
+    }
+    return <PlayCircle />;
+  }, [isLocked, paused, isCurrentlyPlaying]);
+
   return (
     <div
       className={`course-lesson-wrapper ${isLocked ? "locked" : ""}`}
       onClick={() => (isLocked ? null : handleLessonClick(link))}
     >
-      <div className="lesson-status-cell cell">
-        {isLocked ? (
-          <LockClock />
-        ) : isCurrentlyPlaying(link) ? (
-          <Pause />
-        ) : (
-          <PlayCircle />
-        )}
-      </div>
+      <div className="lesson-status-cell cell">{lessonStatusIcon}</div>
       <div className="lesson-duration-cell cell">
         <Typography
           variant="h6"

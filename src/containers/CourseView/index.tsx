@@ -18,6 +18,7 @@ export interface ICoursesOverview extends ConnectedProps<typeof connector> {
 
 const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const [videoLink, setVideoLink] = useState("");
+  const [paused, setPaused] = useState(false);
   const location = useLocation();
   const playerRef: RefObject<HTMLVideoElement> = useRef(null);
 
@@ -43,9 +44,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const handleLessonClick = (link: string) => {
     const isPaused = playerRef.current?.paused;
     if (isCurrentlyPlaying(link)) {
+      setPaused(!isPaused);
       isPaused ? playerRef.current?.play() : playerRef.current?.pause();
       return;
     }
+    setPaused(false);
     setVideoLink(link);
   };
 
@@ -99,6 +102,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
           {courseData.data?.lessons.map((lesson) => (
             <Lesson
               lesson={lesson}
+              paused={paused}
               isCurrentlyPlaying={isCurrentlyPlaying}
               handleLessonClick={handleLessonClick}
             />
