@@ -10,6 +10,7 @@ export interface IVideoProps {
   muted?: boolean;
   position?: "static" | "relative" | "absolute" | "sticky" | "fixed";
   styles?: React.CSSProperties;
+  playerRef: any;
   onVideoClick?: () => void;
 }
 
@@ -19,10 +20,11 @@ const VideoComponent = ({
   controls = false,
   position = "absolute",
   styles,
+  playerRef,
   muted = true,
   onVideoClick,
 }: IVideoProps) => {
-  const playerRef: RefObject<HTMLVideoElement> = useRef(null);
+  // const playerRef: RefObject<HTMLVideoElement> = useRef(null);
 
   return (
     <div className="preview-video-container" onClick={() => onVideoClick?.()}>

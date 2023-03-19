@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, RefObject } from "react";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
 import { Grid, Typography, Button, Divider } from "@material-ui/core";
@@ -19,6 +19,7 @@ export interface ICoursesOverview extends ConnectedProps<typeof connector> {
 const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const [videoLink, setVideoLink] = useState("");
   const location = useLocation();
+  const playerRef: RefObject<HTMLVideoElement> = useRef(null);
 
   useEffect(() => {
     const courseId = location.pathname.split("/").pop();
@@ -40,6 +41,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   };
 
   const handleLessonClick = (link: string) => {
+    const isPaused = playerRef.current?.paused;
+    if (isCurrentlyPlaying(link)) {
+      isPaused ? playerRef.current?.play() : playerRef.current?.pause();
+      return;
+    }
     setVideoLink(link);
   };
 
@@ -56,6 +62,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
           videoUrl={videoLink || ""}
           position="static"
           muted
+          playerRef={playerRef}
         />
       </div>
       <div className="course-view-wrapper">

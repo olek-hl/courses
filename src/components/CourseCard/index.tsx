@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, RefObject } from "react";
 import { Typography, Divider, Chip } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
 import VideoComponent from "../Video";
@@ -13,6 +13,8 @@ export interface ICourseCardProps {
 
 const CourceCard = (props: ICourseCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const playerRef: RefObject<HTMLVideoElement> = useRef(null);
+
   const handleMouseEnter = () => {
     setIsHovered(true);
   };
@@ -38,6 +40,7 @@ const CourceCard = (props: ICourseCardProps) => {
         <VideoComponent
           videoUrl={courseData?.meta.courseVideoPreview?.link}
           onVideoClick={() => onCourseClick(courseData.id)}
+          playerRef={playerRef}
         />
       )}
       <div className="card-container">
