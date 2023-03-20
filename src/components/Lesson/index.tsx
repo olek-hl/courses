@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Typography, Divider, Chip } from "@material-ui/core";
 import { LockClock, Pause, PlayCircle } from "@mui/icons-material";
 import { toMinutesAndSeconds } from "../../services";
@@ -41,7 +41,6 @@ const CourceLesson = (props: ICourseLessonProps) => {
   }, [isLocked, paused, isPlaying]);
 
   const progressValue = useMemo(() => {
-    console.log("updated");
     const localStorage = window.localStorage;
     const userProgress = JSON.parse(localStorage.getItem("progress") || "{}");
     const curentLessonProgress =

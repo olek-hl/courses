@@ -21,9 +21,13 @@ export const updateProgressInLocalStorage = (
           ...savedProgress.courses?.[`${currentCourseId}`]?.[
             `${currentLesson?.id}`
           ],
-          progress: (
-            (currentTime / (currentLesson?.duration || Infinity)) *
-            100
+          progress: Math.max(
+            (currentTime / (currentLesson?.duration || Infinity)) * 100,
+            Number(
+              savedProgress.courses?.[`${currentCourseId}`]?.[
+                `${currentLesson?.id}`
+              ].progress
+            )
           ).toFixed(0),
         },
       },
