@@ -8,7 +8,7 @@ import { Loader, VideoComponent, Lesson } from "../../components";
 import { IRootState } from "../../store/models";
 import CourseViewActions from "./logic/actions";
 import { updateProgressInLocalStorage } from "./helpers";
-import { ICourseViewReducer } from "./logic/models";
+import { ICourseViewReducer, LessonStatus } from "./logic/models";
 
 import "./styles.css";
 
@@ -33,8 +33,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   }, [actions, location.pathname]);
 
   useEffect(() => {
-    const firstLessonLink = courseData.data?.lessons[0].link || "";
-    setVideoLink(firstLessonLink);
+    const firsUnlockedtLessonLink =
+      courseData.data?.lessons?.find(
+        (lesson) => lesson.status === LessonStatus.Unlocked
+      )?.link || "";
+    setVideoLink(firsUnlockedtLessonLink);
   }, [courseData.data]);
 
   const { isFetching, data } = courseData;
