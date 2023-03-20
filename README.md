@@ -1,12 +1,11 @@
-# Project Title
-
-## Course Viewer
+# Course Viewer
 
 A web application that allows users to view a course and keep track of their progress, built with React and Material UI.
 
 ## Features
 
 - Course overview page
+    - Show a list of courses.
 - Course view page with the following features:
     - Displays the first гтдщслув video from the course, course details, and a list of lessons
     - When a lesson is clicked (if it is not locked), the current video will open and the user will know which lesson they are watching
@@ -17,3 +16,9 @@ A web application that allows users to view a course and keep track of their pro
             - The video can be displayed on top of the page by clicking on it. The video will be positioned in the lower right corner of the page and the user can navigate to other pages while the video is still playing.
         2. Change playback speed via keyboard:
             - The user can change the playback speed of the video via keyboard shortcuts. Instructions for using this feature will be displayed near the video.
+
+# Installation
+
+<code>npm install --force</code>
+
+<code>npm run dev</code>
