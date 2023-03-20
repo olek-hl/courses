@@ -1,12 +1,13 @@
 import { useEffect, useState, useRef, RefObject } from "react";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
-import { Grid, Typography, Button, Divider } from "@material-ui/core";
+import { Typography, Divider } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
 import { connect, ConnectedProps } from "react-redux";
 import { Loader, VideoComponent, Lesson } from "../../components";
 import { IRootState } from "../../store/models";
 import CourseViewActions from "./logic/actions";
+import { updateProgressInLocalStorage } from "./helpers";
 import { ICourseViewReducer } from "./logic/models";
 
 import "./styles.css";
@@ -52,6 +53,15 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
     setVideoLink(link);
   };
 
+  const onVideoProgress = (e: any) => {
+    const currentTime = e.target?.currentTime;
+    const currentCourseId = location.pathname.split("/").pop() || "";
+    const currentLesson = courseData.data?.lessons.find(
+      (lesson) => lesson.link === videoLink
+    );
+    updateProgressInLocalStorage(currentTime, currentCourseId, currentLesson);
+  };
+
   if (isFetching || !data) {
     return <Loader isFullPage />;
   }
@@ -66,6 +76,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
           position="static"
           muted
           playerRef={playerRef}
+          onProgress={onVideoProgress}
         />
       </div>
       <div className="course-view-wrapper">
@@ -101,6 +112,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
         <div className="course-lossons-list">
           {courseData.data?.lessons.map((lesson) => (
             <Lesson
+              key={lesson.id}
               lesson={lesson}
               paused={paused}
               isCurrentlyPlaying={isCurrentlyPlaying}

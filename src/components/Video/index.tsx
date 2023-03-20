@@ -12,6 +12,7 @@ export interface IVideoProps {
   styles?: React.CSSProperties;
   playerRef: any;
   onVideoClick?: () => void;
+  onProgress?: (e: any) => void;
 }
 
 const VideoComponent = ({
@@ -21,11 +22,10 @@ const VideoComponent = ({
   position = "absolute",
   styles,
   playerRef,
+  onProgress,
   muted = true,
   onVideoClick,
 }: IVideoProps) => {
-  // const playerRef: RefObject<HTMLVideoElement> = useRef(null);
-
   return (
     <div className="preview-video-container" onClick={() => onVideoClick?.()}>
       <ReactHlsPlayer
@@ -34,6 +34,7 @@ const VideoComponent = ({
         autoPlay={autoPlay}
         controls={controls}
         muted={muted}
+        onTimeUpdate={onProgress}
         style={{
           position: position,
           width: "100%",
