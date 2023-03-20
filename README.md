@@ -8,7 +8,7 @@ A web application that allows users to view a course and keep track of their pro
 
 - Course overview page
 - Course view page with the following features:
-    - Displays the first video from the course, course details, and a list of lessons
+    - Displays the first гтдщслув video from the course, course details, and a list of lessons
     - When a lesson is clicked (if it is not locked), the current video will open and the user will know which lesson they are watching
     - Progress of the video and lesson are saved locally
     - If a lesson is locked, it will be indicated to the user
