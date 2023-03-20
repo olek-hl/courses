@@ -12,13 +12,15 @@ import "./styles.css";
 export interface ICourseLessonProps {
   lesson: ICourseLesson;
   paused: boolean;
+  courseId: string;
   isCurrentlyPlaying: (link: string) => boolean;
   handleLessonClick: (link: string) => void;
 }
 
 const CourceLesson = (props: ICourseLessonProps) => {
   const {
-    lesson: { title, duration, order, status, link, previewImageLink },
+    lesson: { id, title, duration, order, status, link, previewImageLink },
+    courseId,
     paused,
     isCurrentlyPlaying,
     handleLessonClick,
@@ -37,6 +39,15 @@ const CourceLesson = (props: ICourseLessonProps) => {
     }
     return <PlayCircle />;
   }, [isLocked, paused, isPlaying]);
+
+  const progressValue = useMemo(() => {
+    console.log("updated");
+    const localStorage = window.localStorage;
+    const userProgress = JSON.parse(localStorage.getItem("progress") || "{}");
+    const curentLessonProgress =
+      userProgress?.courses?.[courseId]?.[id]?.progress;
+    return curentLessonProgress ?? 0;
+  }, [window.localStorage, courseId, id]);
 
   return (
     <div
@@ -82,7 +93,7 @@ const CourceLesson = (props: ICourseLessonProps) => {
       </div>
       <div className="lesson-progress-cell cell">
         <Typography variant="caption" component="span">
-          {`Progress: 60%`}
+          {`Progress: ${progressValue}%`}
         </Typography>
       </div>
       <div className="lesson-currently-playing cell">

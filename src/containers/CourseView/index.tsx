@@ -23,9 +23,10 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const location = useLocation();
   const playerRef: RefObject<HTMLVideoElement> = useRef(null);
 
+  const courseId = location.pathname.split("/").pop() || "";
+
   useEffect(() => {
-    const courseId = location.pathname.split("/").pop();
-    actions.getCourceData(courseId || "");
+    actions.getCourceData(courseId);
     return () => {
       actions.clearCourseData();
     };
@@ -55,11 +56,10 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
 
   const onVideoProgress = (e: any) => {
     const currentTime = e.target?.currentTime;
-    const currentCourseId = location.pathname.split("/").pop() || "";
     const currentLesson = courseData.data?.lessons.find(
       (lesson) => lesson.link === videoLink
     );
-    updateProgressInLocalStorage(currentTime, currentCourseId, currentLesson);
+    updateProgressInLocalStorage(currentTime, courseId, currentLesson);
   };
 
   if (isFetching || !data) {
@@ -113,6 +113,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
           {courseData.data?.lessons.map((lesson) => (
             <Lesson
               key={lesson.id}
+              courseId={courseId}
               lesson={lesson}
               paused={paused}
               isCurrentlyPlaying={isCurrentlyPlaying}
