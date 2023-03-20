@@ -48,8 +48,6 @@ const CourceLesson = (props: ICourseLessonProps) => {
     }
     const localStorage = window.localStorage;
     const userProgress = JSON.parse(localStorage.getItem("progress") || "{}");
-
-    console.log(userProgress);
     const curentLessonProgress =
       userProgress?.courses?.[courseId]?.[id]?.progress;
     return curentLessonProgress ?? 0;
