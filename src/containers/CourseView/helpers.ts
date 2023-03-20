@@ -24,9 +24,9 @@ export const updateProgressInLocalStorage = (
           progress: Math.max(
             (currentTime / (currentLesson?.duration || Infinity)) * 100,
             Number(
-              savedProgress.courses?.[`${currentCourseId}`]?.[
+              savedProgress?.courses?.[`${currentCourseId}`]?.[
                 `${currentLesson?.id}`
-              ].progress
+              ]?.progress || "0"
             )
           ).toFixed(0),
         },
@@ -34,4 +34,12 @@ export const updateProgressInLocalStorage = (
     },
   };
   localStorage.setItem("progress", JSON.stringify(savedProgress));
+};
+
+export const smallScreenStyles = {
+  overflow: "hidden",
+  textOverflow: "ellipsis",
+  display: "-webkit-box",
+  WebkitLineClamp: "1",
+  WebkitBoxOrient: "vertical" as "vertical",
 };

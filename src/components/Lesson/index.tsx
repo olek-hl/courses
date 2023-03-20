@@ -13,6 +13,7 @@ export interface ICourseLessonProps {
   lesson: ICourseLesson;
   paused: boolean;
   courseId: string;
+  isSmall: boolean;
   isCurrentlyPlaying: (link: string) => boolean;
   handleLessonClick: (link: string) => void;
 }
@@ -22,6 +23,7 @@ const CourceLesson = (props: ICourseLessonProps) => {
     lesson: { id, title, duration, order, status, link, previewImageLink },
     courseId,
     paused,
+    isSmall,
     isCurrentlyPlaying,
     handleLessonClick,
   } = props;
@@ -41,40 +43,51 @@ const CourceLesson = (props: ICourseLessonProps) => {
   }, [isLocked, paused, isPlaying]);
 
   const progressValue = useMemo(() => {
+    if (!link) {
+      return 0;
+    }
     const localStorage = window.localStorage;
     const userProgress = JSON.parse(localStorage.getItem("progress") || "{}");
+
+    console.log(userProgress);
     const curentLessonProgress =
       userProgress?.courses?.[courseId]?.[id]?.progress;
     return curentLessonProgress ?? 0;
-  }, [window.localStorage, courseId, id]);
+  }, [window.localStorage, courseId, id, link]);
 
   return (
     <div
-      className={`course-lesson-wrapper ${isLocked ? "locked" : ""}`}
+      className={`course-lesson-wrapper ${isLocked ? "locked" : ""} ${
+        isSmall ? "small-size" : ""
+      }`}
       onClick={() => (isLocked ? null : handleLessonClick(link))}
     >
       <div className="lesson-status-cell cell">{lessonStatusIcon}</div>
-      <div className="lesson-duration-cell cell">
-        <Typography
-          variant="h6"
-          component="span"
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            display: "-webkit-box",
-            WebkitLineClamp: "1",
-            WebkitBoxOrient: "vertical",
-          }}
-        >
-          {toMinutesAndSeconds(duration)}
-        </Typography>
-      </div>
-      <div className="lesson-image-cell cell">
-        <img
-          src={`${previewImageLink}/lesson-${order}.webp`}
-          alt="lesson-image"
-        />
-      </div>
+      {!isSmall && (
+        <div className="lesson-duration-cell cell">
+          <Typography
+            variant="h6"
+            component="span"
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "-webkit-box",
+              WebkitLineClamp: "1",
+              WebkitBoxOrient: "vertical",
+            }}
+          >
+            {toMinutesAndSeconds(duration)}
+          </Typography>
+        </div>
+      )}
+      {!isSmall && (
+        <div className="lesson-image-cell cell">
+          <img
+            src={`${previewImageLink}/lesson-${order}.webp`}
+            alt="lesson-image"
+          />
+        </div>
+      )}
       <div className="lesson-title-cell cell">
         <Typography
           variant="h6"
@@ -85,6 +98,7 @@ const CourceLesson = (props: ICourseLessonProps) => {
             display: "-webkit-box",
             WebkitLineClamp: "1",
             WebkitBoxOrient: "vertical",
+            ...(isSmall && isCurrentlyPlaying(link) && { color: "#9c27b0" }),
           }}
         >
           {title}
@@ -92,12 +106,14 @@ const CourceLesson = (props: ICourseLessonProps) => {
       </div>
       <div className="lesson-progress-cell cell">
         <Typography variant="caption" component="span">
-          {`Progress: ${progressValue}%`}
+          {`${isSmall ? "" : "Progress: "}${progressValue}%`}
         </Typography>
       </div>
-      <div className="lesson-currently-playing cell">
-        {isPlaying && <Chip label="Currently playing" color={"secondary"} />}
-      </div>
+      {!isSmall && (
+        <div className="lesson-currently-playing cell">
+          {isPlaying && <Chip label="Currently playing" color={"secondary"} />}
+        </div>
+      )}
     </div>
   );
 };

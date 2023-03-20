@@ -3,11 +3,13 @@ import { useLocation } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
 import { Typography, Divider } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
+import { useTheme } from "@material-ui/core/styles";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { connect, ConnectedProps } from "react-redux";
 import { Loader, VideoComponent, Lesson } from "../../components";
 import { IRootState } from "../../store/models";
 import CourseViewActions from "./logic/actions";
-import { updateProgressInLocalStorage } from "./helpers";
+import { updateProgressInLocalStorage, smallScreenStyles } from "./helpers";
 import { ICourseViewReducer, LessonStatus } from "./logic/models";
 
 import "./styles.css";
@@ -21,6 +23,8 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const [videoLink, setVideoLink] = useState("");
   const [paused, setPaused] = useState(false);
   const location = useLocation();
+  const theme = useTheme();
+  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
   const playerRef: RefObject<HTMLVideoElement> = useRef(null);
 
   const courseId = location.pathname.split("/").pop() || "";
@@ -47,6 +51,9 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   };
 
   const handleLessonClick = (link: string) => {
+    if (!link) {
+      return;
+    }
     const isPaused = playerRef.current?.paused;
     if (isCurrentlyPlaying(link)) {
       setPaused(!isPaused);
@@ -71,7 +78,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
 
   return (
     <>
-      <div className="course-lesson-video">
+      <div className={`course-lesson-video ${isSmall ? "small-size" : ""}`}>
         <VideoComponent
           controls
           autoPlay
@@ -85,10 +92,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
       <div className="course-view-wrapper">
         <div className="course-title-rating">
           <Typography
-            variant={"h3"}
+            variant={isSmall ? "h6" : "h3"}
             component="div"
             style={{
               margin: "15px 15px 15px 0",
+              ...(isSmall && smallScreenStyles),
             }}
           >
             {courseData.data?.title}
@@ -97,20 +105,22 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
             value={courseData.data?.rating}
             readOnly
             style={{ position: "static" }}
-            size="large"
+            size={isSmall ? "small" : "large"}
           />
         </div>
-        <div className="course-description">
-          <Typography
-            variant={"subtitle1"}
-            component="p"
-            style={{
-              margin: "15px 0",
-            }}
-          >
-            {courseData.data?.description}
-          </Typography>
-        </div>
+        {!isSmall && (
+          <div className="course-description">
+            <Typography
+              variant={"subtitle1"}
+              component="p"
+              style={{
+                margin: "15px 0",
+              }}
+            >
+              {courseData.data?.description}
+            </Typography>
+          </div>
+        )}
         <Divider />
         <div className="course-lossons-list">
           {courseData.data?.lessons.map((lesson) => (
@@ -121,6 +131,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
               paused={paused}
               isCurrentlyPlaying={isCurrentlyPlaying}
               handleLessonClick={handleLessonClick}
+              isSmall={isSmall}
             />
           ))}
         </div>

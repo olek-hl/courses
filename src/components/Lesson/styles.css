@@ -11,10 +11,18 @@
   cursor: default;
   opacity: 0.3;
 }
+.course-lesson-wrapper.small-size .lesson-title-cell {
+  width: 70%;
+}
+.course-lesson-wrapper.small-size .lesson-progress-cell {
+  text-align: right;
+  width: 20%;
+}
 .lesson-status-cell {
   width: 5%;
   display: flex;
   justify-content: center;
+  margin-right: 10px;
 }
 .lesson-duration-cell {
   width: 7%;
