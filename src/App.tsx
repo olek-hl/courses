@@ -7,7 +7,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Courses />} />
+        <Route path="/courses" element={<Courses />} />
         <Route path="/courses/:id" element={<CourseView />} />
       </Routes>
     </Router>
