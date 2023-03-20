@@ -35,11 +35,3 @@ export const updateProgressInLocalStorage = (
   };
   localStorage.setItem("progress", JSON.stringify(savedProgress));
 };
-
-export const smallScreenStyles = {
-  overflow: "hidden",
-  textOverflow: "ellipsis",
-  display: "-webkit-box",
-  WebkitLineClamp: "1",
-  WebkitBoxOrient: "vertical" as "vertical",
-};

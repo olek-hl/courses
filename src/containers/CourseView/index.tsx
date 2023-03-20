@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, RefObject } from "react";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
-import { Typography, Divider } from "@material-ui/core";
+import { Typography, Divider, Chip } from "@material-ui/core";
 import { Rating } from "@material-ui/lab";
 import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
@@ -9,7 +9,14 @@ import { connect, ConnectedProps } from "react-redux";
 import { Loader, VideoComponent, Lesson } from "../../components";
 import { IRootState } from "../../store/models";
 import CourseViewActions from "./logic/actions";
-import { updateProgressInLocalStorage, smallScreenStyles } from "./helpers";
+import { updateProgressInLocalStorage } from "./helpers";
+import {
+  smallScreenStyles,
+  videoSpeedUpKey,
+  videoSpeedDownKey,
+  MAX_PLAYBACK_RATE,
+  MIN_PLAYBACK_RATE,
+} from "./config";
 import { ICourseViewReducer, LessonStatus } from "./logic/models";
 
 import "./styles.css";
@@ -22,6 +29,7 @@ export interface ICoursesOverview extends ConnectedProps<typeof connector> {
 const CourseView = ({ actions, courseData }: ICoursesOverview) => {
   const [videoLink, setVideoLink] = useState("");
   const [paused, setPaused] = useState(false);
+  const [playbackSpeed, setPlaybackSpeed] = useState<string>("Normal");
   const location = useLocation();
   const theme = useTheme();
   const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
@@ -43,6 +51,30 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
       )?.link || "";
     setVideoLink(firsUnlockedtLessonLink);
   }, [courseData.data]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", (e) => {
+      if (!playerRef.current) {
+        return;
+      }
+      switch (e.key) {
+        case videoSpeedUpKey:
+          playerRef.current.playbackRate = Math.min(
+            playerRef.current.playbackRate + 0.5,
+            MAX_PLAYBACK_RATE
+          );
+          setPlaybackSpeed(`${playerRef.current.playbackRate.toFixed(2)}`);
+        case videoSpeedDownKey:
+          playerRef.current.playbackRate = Math.max(
+            playerRef.current.playbackRate - 0.25,
+            MIN_PLAYBACK_RATE
+          );
+          setPlaybackSpeed(`${playerRef.current.playbackRate.toFixed(2)}`);
+        default:
+          return;
+      }
+    });
+  }, []);
 
   const { isFetching, data } = courseData;
 
@@ -108,6 +140,14 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
             size={isSmall ? "small" : "large"}
           />
         </div>
+        {!isSmall && (
+          <Chip
+            label={`Playback Speed: ${playbackSpeed.replace(
+              "1.00",
+              "Normal"
+            )}. (Use 'l' button to speed up video or 'j' to slow it down)`}
+          />
+        )}
         {!isSmall && (
           <div className="course-description">
             <Typography
