@@ -1,4 +1,4 @@
-# DEMO - https://courses-nine-opal.vercel.app/
+# DEMO - https://courses-ew35.vercel.app/
 
 # Course Viewer
 
