@@ -8,16 +8,11 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { connect, ConnectedProps } from "react-redux";
 import { Loader, VideoComponent, Lesson } from "../../components";
 import { IRootState } from "../../store/models";
-import CourseViewActions from "./logic/actions";
+import { CourseViewActions } from "./logic/actions";
 import { updateProgressInLocalStorage } from "./helpers";
-import {
-  smallScreenStyles,
-  videoSpeedUpKey,
-  videoSpeedDownKey,
-  MAX_PLAYBACK_RATE,
-  MIN_PLAYBACK_RATE,
-} from "./config";
+import { smallScreenStyles, playbackRateCaption } from "./config";
 import { ICourseViewReducer, LessonStatus } from "./logic/models";
+import usePaybackSpeedChange from "../../hooks/usePaybackSpeedChange";
 
 import "./styles.css";
 
@@ -26,16 +21,16 @@ export interface ICoursesOverview extends ConnectedProps<typeof connector> {
   courseData: ICourseViewReducer;
 }
 
-const CourseView = ({ actions, courseData }: ICoursesOverview) => {
-  const [videoLink, setVideoLink] = useState("");
-  const [paused, setPaused] = useState(false);
-  const [playbackSpeed, setPlaybackSpeed] = useState<string>("Normal");
+const CourseView = ({ actions, courseData }: ICoursesOverview): JSX.Element => {
+  const [videoLink, setVideoLink] = useState<string>("");
+  const [isVideoPaused, setPaused] = useState<boolean>(false);
   const location = useLocation();
   const theme = useTheme();
-  const isSmall = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmall: boolean = useMediaQuery(theme.breakpoints.down("sm"));
   const playerRef: RefObject<HTMLVideoElement> = useRef(null);
+  const playbackSpeed: string = usePaybackSpeedChange(playerRef);
 
-  const courseId = location.pathname.split("/").pop() || "";
+  const courseId: string = location.pathname.split("/").pop() || "";
 
   useEffect(() => {
     actions.getCourceData(courseId);
@@ -52,37 +47,13 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
     setVideoLink(firsUnlockedtLessonLink);
   }, [courseData.data]);
 
-  useEffect(() => {
-    window.addEventListener("keydown", (e) => {
-      if (!playerRef.current) {
-        return;
-      }
-      switch (e.key) {
-        case videoSpeedUpKey:
-          playerRef.current.playbackRate = Math.min(
-            playerRef.current.playbackRate + 0.5,
-            MAX_PLAYBACK_RATE
-          );
-          setPlaybackSpeed(`${playerRef.current.playbackRate.toFixed(2)}`);
-        case videoSpeedDownKey:
-          playerRef.current.playbackRate = Math.max(
-            playerRef.current.playbackRate - 0.25,
-            MIN_PLAYBACK_RATE
-          );
-          setPlaybackSpeed(`${playerRef.current.playbackRate.toFixed(2)}`);
-        default:
-          return;
-      }
-    });
-  }, []);
-
   const { isFetching, data } = courseData;
 
-  const isCurrentlyPlaying = (link: string) => {
+  const isCurrentlyPlaying = (link: string): boolean => {
     return link === videoLink;
   };
 
-  const handleLessonClick = (link: string) => {
+  const handleLessonClick = (link: string): void => {
     if (!link) {
       return;
     }
@@ -96,7 +67,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
     setVideoLink(link);
   };
 
-  const onVideoProgress = (e: any) => {
+  const onVideoProgress = (e: React.ChangeEvent<HTMLVideoElement>): void => {
     const currentTime = e.target?.currentTime;
     const currentLesson = courseData.data?.lessons.find(
       (lesson) => lesson.link === videoLink
@@ -140,14 +111,7 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
             size={isSmall ? "small" : "large"}
           />
         </div>
-        {!isSmall && (
-          <Chip
-            label={`Playback Speed: ${playbackSpeed.replace(
-              "1.00",
-              "Normal"
-            )}. (Use 'l' button to speed up video or 'j' to slow it down)`}
-          />
-        )}
+        {!isSmall && <Chip label={playbackRateCaption(playbackSpeed)} />}
         {!isSmall && (
           <div className="course-description">
             <Typography
@@ -168,10 +132,11 @@ const CourseView = ({ actions, courseData }: ICoursesOverview) => {
               key={lesson.id}
               courseId={courseId}
               lesson={lesson}
-              paused={paused}
+              isPaused={isVideoPaused}
               isCurrentlyPlaying={isCurrentlyPlaying}
               handleLessonClick={handleLessonClick}
               isSmall={isSmall}
+              isLocked={lesson.status === LessonStatus.Locked}
             />
           ))}
         </div>
